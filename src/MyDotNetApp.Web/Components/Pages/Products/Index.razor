@@ -1,0 +1,137 @@
+@page "/products"
+@attribute [Authorize]
+@inject IHttpClientFactory HttpFactory
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<PageTitle>Products</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
+
+<MudPaper Class="pa-4 mb-4">
+    <MudGrid AlignItems="Center">
+        <MudItem xs="12" sm="6">
+            <MudTextField @bind-Value="_searchTerm" Label="Search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined"
+                          Immediate="true" DebounceInterval="400" OnDebounceIntervalElapsed="LoadProducts" />
+        </MudItem>
+        <MudItem xs="12" sm="6" Class="d-flex justify-end">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="OpenCreateDialog">New Product</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="_products" Hover="true" Striped="true" Dense="true"
+              CurrentPage="_currentPage" RowsPerPage="_pageSize">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>SKU</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Stock</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="SKU">@context.SKU</MudTd>
+            <MudTd DataLabel="Price">@context.Price.ToString("C")</MudTd>
+            <MudTd DataLabel="Stock">@context.Stock</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                               Size="Size.Small" OnClick="@(() => OpenEditDialog(context))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                               Size="Size.Small" OnClick="@(() => DeleteProduct(context.Id))" />
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No products found.</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new [] { 5, 10, 25 }" />
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+    private List<ProductDto> _products = [];
+    private string? _searchTerm;
+    private bool _loading;
+    private int _currentPage = 0;
+    private int _pageSize = 10;
+    private int _totalCount;
+
+    protected override async Task OnInitializedAsync() => await LoadProducts();
+
+    private async Task LoadProducts()
+    {
+        _loading = true;
+        try
+        {
+            var http = HttpFactory.CreateClient("API");
+            var url = $"/api/products?search={Uri.EscapeDataString(_searchTerm ?? string.Empty)}&page={_currentPage + 1}&pageSize={_pageSize}";
+            var result = await http.GetFromJsonAsync<PagedResponse<ProductDto>>(url);
+            _products = result?.Items?.ToList() ?? [];
+            _totalCount = result?.TotalCount ?? 0;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task OpenCreateDialog()
+    {
+        var parameters = new DialogParameters<ProductFormDialog>
+        {
+            { x => x.Product, null }
+        };
+        var dialog = await DialogService.ShowAsync<ProductFormDialog>("Create Product", parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled) await LoadProducts();
+    }
+
+    private async Task OpenEditDialog(ProductDto product)
+    {
+        var record = new ProductFormDialog.ProductRecord(product.Id, product.Name, product.Description, product.Price, product.SKU, product.Stock);
+        var parameters = new DialogParameters<ProductFormDialog>
+        {
+            { x => x.Product, record }
+        };
+        var dialog = await DialogService.ShowAsync<ProductFormDialog>("Edit Product", parameters);
+        var result = await dialog.Result;
+        if (!result.Canceled) await LoadProducts();
+    }
+
+    private async Task DeleteProduct(Guid id)
+    {
+        var confirm = await DialogService.ShowMessageBox(
+            "Delete Product",
+            "Are you sure you want to delete this product?",
+            yesText: "Delete", cancelText: "Cancel");
+
+        if (confirm == true)
+        {
+            var http = HttpFactory.CreateClient("API");
+            var response = await http.DeleteAsync($"/api/products/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Product deleted.", Severity.Success);
+                await LoadProducts();
+            }
+            else
+            {
+                Snackbar.Add("Failed to delete product.", Severity.Error);
+            }
+        }
+    }
+
+    private record PagedResponse<T>(IEnumerable<T> Items, int TotalCount, int Page, int PageSize);
+    private record ProductDto(Guid Id, string Name, string Description, decimal Price, string SKU, int Stock);
+}

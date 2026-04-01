@@ -1,0 +1,84 @@
+@inject IHttpClientFactory HttpFactory
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">@(Product is null ? "Create Product" : "Edit Product")</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="_name" Label="Name" Variant="Variant.Outlined" Class="mb-3" Required="true" />
+        <MudTextField @bind-Value="_description" Label="Description" Variant="Variant.Outlined"
+                      Lines="3" Class="mb-3" />
+        <MudNumericField @bind-Value="_price" Label="Price" Variant="Variant.Outlined"
+                         Format="F2" Class="mb-3" Min="0m" />
+        <MudTextField @bind-Value="_sku" Label="SKU" Variant="Variant.Outlined" Class="mb-3" />
+        <MudNumericField @bind-Value="_stock" Label="Stock" Variant="Variant.Outlined"
+                         Class="mb-3" Min="0" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Submit" Disabled="_loading">
+            @(Product is null ? "Create" : "Save")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public ProductRecord? Product { get; set; }
+
+    private string _name = string.Empty;
+    private string _description = string.Empty;
+    private decimal _price;
+    private string _sku = string.Empty;
+    private int _stock;
+    private bool _loading;
+
+    protected override void OnParametersSet()
+    {
+        if (Product is not null)
+        {
+            _name = Product.Name;
+            _description = Product.Description;
+            _price = Product.Price;
+            _sku = Product.SKU;
+            _stock = Product.Stock;
+        }
+    }
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(_name)) return;
+
+        _loading = true;
+        try
+        {
+            var http = HttpFactory.CreateClient("API");
+            var payload = new { Name = _name, Description = _description, Price = _price, SKU = _sku, Stock = _stock };
+            HttpResponseMessage response;
+
+            if (Product is null)
+                response = await http.PostAsJsonAsync("/api/products", payload);
+            else
+                response = await http.PutAsJsonAsync($"/api/products/{Product.Id}", payload);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add(Product is null ? "Product created." : "Product updated.", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Snackbar.Add("Operation failed.", Severity.Error);
+            }
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    public record ProductRecord(Guid Id, string Name, string Description, decimal Price, string SKU, int Stock);
+}

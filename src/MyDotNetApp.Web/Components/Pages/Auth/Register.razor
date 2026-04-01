@@ -1,0 +1,81 @@
+@page "/auth/register"
+@layout MyDotNetApp.Web.Components.Layout.MainLayout
+@attribute [AllowAnonymous]
+@inject IHttpClientFactory HttpFactory
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>Register</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5">Create Account</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTextField @bind-Value="_userName" Label="Username" Variant="Variant.Outlined" Class="mb-3" />
+            <MudTextField @bind-Value="_email" Label="Email" InputType="InputType.Email"
+                          Variant="Variant.Outlined" Class="mb-3" />
+            <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                          Variant="Variant.Outlined" Class="mb-3" />
+            <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputType="InputType.Password"
+                          Variant="Variant.Outlined" Class="mb-3" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                       OnClick="HandleRegister" Disabled="_loading">
+                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" /> }
+                else { <text>Register</text> }
+            </MudButton>
+        </MudCardActions>
+        <MudCardContent>
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Already have an account?
+                <MudLink Href="/auth/login">Login</MudLink>
+            </MudText>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string _userName = string.Empty;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string _confirmPassword = string.Empty;
+    private bool _loading;
+
+    private async Task HandleRegister()
+    {
+        _loading = true;
+        try
+        {
+            var http = HttpFactory.CreateClient("API");
+            var response = await http.PostAsJsonAsync("/api/auth/register", new
+            {
+                UserName = _userName,
+                Email = _email,
+                Password = _password,
+                ConfirmPassword = _confirmPassword
+            });
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Registration successful! Please login.", Severity.Success);
+                Navigation.NavigateTo("/auth/login");
+            }
+            else
+            {
+                var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                Snackbar.Add(error?.Error ?? "Registration failed.", Severity.Error);
+            }
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private record ErrorResponse(string Error);
+}

@@ -1,0 +1,71 @@
+@page "/admin/logs"
+@attribute [Authorize(Roles = "Admin")]
+@inject IHttpClientFactory HttpFactory
+
+<PageTitle>Application Logs</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Application Logs</MudText>
+
+<MudPaper Class="pa-4 mb-4">
+    <MudGrid AlignItems="Center">
+        <MudItem xs="12" sm="4">
+            <MudNumericField @bind-Value="_lineCount" Label="Lines to show" Min="10" Max="1000"
+                             Variant="Variant.Outlined" />
+        </MudItem>
+        <MudItem xs="12" sm="2">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="LoadLogs">Refresh</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_loading)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudPaper Class="pa-4" Style="background:#1e1e1e; color:#d4d4d4; font-family: monospace; font-size: 12px; overflow-x: auto; max-height: 600px; overflow-y: auto;">
+        @foreach (var line in _logLines)
+        {
+            <div style="@GetLineStyle(line)">@line</div>
+        }
+        @if (!_logLines.Any())
+        {
+            <div>No log entries found.</div>
+        }
+    </MudPaper>
+}
+
+@code {
+    private List<string> _logLines = [];
+    private bool _loading;
+    private int _lineCount = 100;
+
+    protected override async Task OnInitializedAsync() => await LoadLogs();
+
+    private async Task LoadLogs()
+    {
+        _loading = true;
+        try
+        {
+            var http = HttpFactory.CreateClient("API");
+            var result = await http.GetFromJsonAsync<List<string>>($"/api/logs?lines={_lineCount}");
+            _logLines = result ?? [];
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private static string GetLineStyle(string line)
+    {
+        if (line.Contains("[ERR]") || line.Contains("[FTL]"))
+            return "color: #f48771; padding: 1px 0;";
+        if (line.Contains("[WRN]"))
+            return "color: #dcdcaa; padding: 1px 0;";
+        if (line.Contains("[DBG]"))
+            return "color: #9cdcfe; padding: 1px 0;";
+        return "padding: 1px 0;";
+    }
+}

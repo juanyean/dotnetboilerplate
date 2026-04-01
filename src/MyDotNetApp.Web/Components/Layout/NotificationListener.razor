@@ -1,0 +1,37 @@
+@implements IAsyncDisposable
+@inject TokenStorageService TokenStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+@code {
+    private HubConnection? _hubConnection;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var token = await TokenStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token)) return;
+
+        var hubUrl = Navigation.ToAbsoluteUri($"/hubs/notifications?access_token={token}");
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl)
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<string>("ReceiveNotification", message =>
+        {
+            Snackbar.Add(message, Severity.Info);
+            InvokeAsync(StateHasChanged);
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+            await _hubConnection.DisposeAsync();
+    }
+}

@@ -1,0 +1,45 @@
+## .NET / C#
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+
+## Build output
+out/
+publish/
+
+## EF Core
+*.db
+*.db-shm
+*.db-wal
+migrations/
+
+## Logs
+logs/
+*.log
+
+## Secrets / environment
+appsettings.*.local.json
+secrets.json
+.env
+
+## NuGet
+.nuget/
+*.nupkg
+packages/
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Rider / JetBrains
+.idea/
+
+## Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml

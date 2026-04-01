@@ -1,0 +1,52 @@
+@page "/"
+@attribute [Authorize]
+
+<PageTitle>Home</PageTitle>
+
+<MudText Typo="Typo.h4" GutterBottom="true">Welcome to MyDotNetApp</MudText>
+<MudText Typo="Typo.body1">
+    This is a Clean Architecture boilerplate built with ASP.NET Core 10, Blazor, Minimal APIs, and SignalR.
+</MudText>
+
+<MudGrid Class="mt-6">
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard>
+            <MudCardContent>
+                <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h6">Products</MudText>
+                <MudText Typo="Typo.body2">Manage your product catalog.</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton Href="/products" Variant="Variant.Text" Color="Color.Primary">Go to Products</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <MudItem xs="12" sm="6" md="3">
+                <MudCard>
+                    <MudCardContent>
+                        <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Secondary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">Users</MudText>
+                        <MudText Typo="Typo.body2">Manage application users.</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Href="/admin/users" Variant="Variant.Text" Color="Color.Secondary">Manage Users</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudCard>
+                    <MudCardContent>
+                        <MudIcon Icon="@Icons.Material.Filled.Article" Color="Color.Tertiary" Size="Size.Large" />
+                        <MudText Typo="Typo.h6">Logs</MudText>
+                        <MudText Typo="Typo.body2">View application logs.</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Href="/admin/logs" Variant="Variant.Text" Color="Color.Tertiary">View Logs</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </Authorized>
+    </AuthorizeView>
+</MudGrid>

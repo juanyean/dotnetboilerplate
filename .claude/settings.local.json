@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/ITLJY/development/Boilerplate -type f -name *.sln -o -name *.csproj -o -name *.vbproj)",
+      "Bash(cmd.exe /c \"dotnet build c:\\\\Users\\\\ITLJY\\\\development\\\\Boilerplate\\\\MyDotNetApp.sln > c:\\\\Boilerplate_build.txt 2>&1\")",
+      "Bash(cmd.exe /c dotnet --version)",
+      "Bash(\"c:\\\\Users\\\\ITLJY\\\\development\\\\Boilerplate\\\\dotnet_ver.txt\")"
+    ]
+  }
+}

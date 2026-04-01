@@ -1,0 +1,75 @@
+@page "/auth/login"
+@layout MyDotNetApp.Web.Components.Layout.MainLayout
+@attribute [AllowAnonymous]
+@inject IHttpClientFactory HttpFactory
+@inject JwtAuthStateProvider AuthProvider
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>Login</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5">Sign In</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudTextField @bind-Value="_email" Label="Email" InputType="InputType.Email"
+                          Variant="Variant.Outlined" Class="mb-3" />
+            <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                          Variant="Variant.Outlined" Class="mb-3" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                       OnClick="HandleLogin" Disabled="_loading">
+                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" /> }
+                else { <text>Login</text> }
+            </MudButton>
+        </MudCardActions>
+        <MudCardContent>
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Don't have an account?
+                <MudLink Href="/auth/register">Register</MudLink>
+            </MudText>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private bool _loading;
+
+    [Parameter][SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
+
+    private async Task HandleLogin()
+    {
+        _loading = true;
+        try
+        {
+            var http = HttpFactory.CreateClient("API");
+            var response = await http.PostAsJsonAsync("/api/auth/login",
+                new { Email = _email, Password = _password });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Invalid email or password.", Severity.Error);
+                return;
+            }
+
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            if (loginResponse?.Token is null) return;
+
+            await AuthProvider.NotifyUserLoginAsync(loginResponse.Token);
+            Navigation.NavigateTo(ReturnUrl ?? "/", forceLoad: false);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private record LoginResponse(string Token, string Email, string UserName);
+}

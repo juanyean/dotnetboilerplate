@@ -1,0 +1,21 @@
+/* Application-level styles */
+html, body {
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+}
+
+.mud-table-container {
+    overflow-x: auto;
+}
+
+/* Log viewer */
+.log-viewer {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    font-size: 12px;
+    padding: 1rem;
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+}
