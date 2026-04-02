@@ -4,6 +4,7 @@ using MyDotNetApp.Application;
 using MyDotNetApp.Infrastructure;
 using MyDotNetApp.Infrastructure.Data.Seed;
 using MyDotNetApp.Infrastructure.Hubs;
+using MyDotNetApp.Web;
 using MyDotNetApp.Web.Auth;
 using MyDotNetApp.Web.Endpoints;
 using Serilog;

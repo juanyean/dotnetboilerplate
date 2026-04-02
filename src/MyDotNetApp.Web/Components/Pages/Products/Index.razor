@@ -10,7 +10,7 @@
 <MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
 
 <MudPaper Class="pa-4 mb-4">
-    <MudGrid AlignItems="Center">
+    <MudGrid>
         <MudItem xs="12" sm="6">
             <MudTextField @bind-Value="_searchTerm" Label="Search" Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined"
@@ -94,7 +94,7 @@ else
         };
         var dialog = await DialogService.ShowAsync<ProductFormDialog>("Create Product", parameters);
         var result = await dialog.Result;
-        if (!result.Canceled) await LoadProducts();
+        if (result is not null && !result.Canceled) await LoadProducts();
     }
 
     private async Task OpenEditDialog(ProductDto product)
@@ -106,7 +106,7 @@ else
         };
         var dialog = await DialogService.ShowAsync<ProductFormDialog>("Edit Product", parameters);
         var result = await dialog.Result;
-        if (!result.Canceled) await LoadProducts();
+        if (result is not null && !result.Canceled) await LoadProducts();
     }
 
     private async Task DeleteProduct(Guid id)
