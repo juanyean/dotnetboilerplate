@@ -41,7 +41,10 @@ else
     private bool _loading;
     private int _lineCount = 100;
 
-    protected override async Task OnInitializedAsync() => await LoadLogs();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await LoadLogs();
+    }
 
     private async Task LoadLogs()
     {

@@ -67,7 +67,10 @@ else
     private int _pageSize = 10;
     private int _totalCount;
 
-    protected override async Task OnInitializedAsync() => await LoadProducts();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await LoadProducts();
+    }
 
     private async Task LoadProducts()
     {

@@ -46,7 +46,10 @@ else
     private List<UserDto> _users = [];
     private bool _loading;
 
-    protected override async Task OnInitializedAsync() => await LoadUsers();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await LoadUsers();
+    }
 
     private async Task LoadUsers()
     {
