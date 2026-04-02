@@ -1,0 +1,7 @@
+<Project>
+  <!-- Suppress AutoMapper advisory: GHSA-rvv3-g6hj-g44x affects all versions;
+       this is a known design-level limitation with no patched release available. -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x" />
+  </ItemGroup>
+</Project>

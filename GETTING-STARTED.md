@@ -53,14 +53,10 @@ Lets you browse `app.db` to inspect seeded data.
 
 If cloning from GitHub:
 ```powershell
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/juanyean/dotnetboilerplate.git
+cd dotnetboilerplate
 ```
 
-Or navigate to the existing folder:
-```powershell
-cd c:\Boilerplate
-```
 
 ### Step 2 — Restore NuGet packages
 ```powershell
