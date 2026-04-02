@@ -21,7 +21,11 @@ dotnet --version
 
 ### 2. EF Core CLI Tool
 ```powershell
+# Install (first time)
 dotnet tool install -g dotnet-ef
+
+# Already installed but on an older version? Update it:
+dotnet tool update -g dotnet-ef
 ```
 
 Verify:
@@ -32,6 +36,8 @@ dotnet ef --version
 
 > If you get "command not found", add the dotnet tools path to your system PATH:
 > `%USERPROFILE%\.dotnet\tools`
+>
+> **Must be v10.x.** Running an older version (e.g. 7.x or 8.x) against a .NET 10 project will fail.
 
 ### 3. Git
 Download: https://git-scm.com
@@ -69,12 +75,17 @@ Expected: all packages restored, no errors.
 
 > This only needs to be done **once** (or after you add a new entity).
 
+Run from the **solution root**:
 ```powershell
-cd src\MyDotNetApp.Web
-dotnet ef migrations add InitialCreate
+dotnet ef migrations add InitialCreate `
+  --project src\MyDotNetApp.Infrastructure `
+  --startup-project src\MyDotNetApp.Web
 ```
 
-Expected: a `Migrations/` folder appears inside `src\MyDotNetApp.Infrastructure\Data\`.
+- `--project` — where the migration files are written (`Infrastructure`)
+- `--startup-project` — where `appsettings.json` and the connection string live (`Web`)
+
+Expected: a `Migrations/` folder appears inside `src\MyDotNetApp.Infrastructure\`.
 
 ### Step 4 — Run the application
 ```powershell
@@ -203,10 +214,14 @@ dotnet dev-certs https --trust
 
 ### Migration errors on startup
 ```powershell
-# Reset the database completely
-cd src\MyDotNetApp.Web
-dotnet ef database drop --force
-dotnet ef database update
+# Reset the database completely (run from solution root)
+dotnet ef database drop --force `
+  --project src\MyDotNetApp.Infrastructure `
+  --startup-project src\MyDotNetApp.Web
+
+dotnet ef database update `
+  --project src\MyDotNetApp.Infrastructure `
+  --startup-project src\MyDotNetApp.Web
 ```
 
 ### Port already in use
@@ -221,7 +236,11 @@ taskkill /PID <PID> /F
 ### Build errors after adding a new entity
 Make sure you:
 1. Added `DbSet<T>` to `AppDbContext.cs`
-2. Created and ran a new migration: `dotnet ef migrations add <Name>`
+2. Created and ran a new migration from the solution root:
+   ```powershell
+   dotnet ef migrations add <Name> --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+   dotnet ef database update  --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+   ```
 3. Registered the service in the correct `DependencyInjection.cs`
 
 ---

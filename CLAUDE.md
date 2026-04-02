@@ -9,7 +9,7 @@ To start a new project: find-and-replace `MyDotNetApp` with your project name ac
 
 - **Shell:** Always use `powershell.exe -Command "..."` — CMD fails silently in this WSL setup
 - **SDK Required:** .NET 10 (`net10.0`). Currently only 7.0.401 is installed → install from https://dotnet.microsoft.com/download/dotnet/10.0
-- **EF CLI:** `dotnet tool install -g dotnet-ef`
+- **EF CLI:** `dotnet tool install -g dotnet-ef` (must be v10.x — update with `dotnet tool update -g dotnet-ef`)
 
 ---
 
@@ -437,10 +437,10 @@ dotnet build
 # Run application
 dotnet run --project src\MyDotNetApp.Web
 
-# EF Core — run from src\MyDotNetApp.Web
-dotnet ef migrations add <Name>
-dotnet ef database update
-dotnet ef database drop          # reset database
+# EF Core — always run from the solution root
+dotnet ef migrations add <Name> --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+dotnet ef database update        --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+dotnet ef database drop --force  --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
 
 # Tests
 dotnet test
@@ -521,9 +521,8 @@ public DbSet<Category> Categories => Set<Category>();
 
 Run migration:
 ```powershell
-cd src\MyDotNetApp.Web
-dotnet ef migrations add AddCategory
-dotnet ef database update
+dotnet ef migrations add AddCategory --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+dotnet ef database update            --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
 ```
 
 ### 10 — Web: API Endpoints
@@ -557,7 +556,8 @@ After renaming:
 1. Update `appsettings.json` — change `Issuer`, `Audience`, `SecretKey`
 2. Change admin credentials in `DataSeeder.cs`
 3. Delete `Product` entity or repurpose it
-4. Run `dotnet ef migrations add InitialCreate` for fresh migration
+4. Run a fresh migration from the solution root:
+   `dotnet ef migrations add InitialCreate --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web`
 
 ---
 
