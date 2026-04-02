@@ -2,11 +2,11 @@ using System.Net.Http.Headers;
 
 namespace MyDotNetApp.Web.Auth;
 
-public class ApiAuthHandler : DelegatingHandler
+public class JwtAuthorizationMessageHandler : DelegatingHandler
 {
     private readonly TokenStorageService _tokenStorage;
 
-    public ApiAuthHandler(TokenStorageService tokenStorage)
+    public JwtAuthorizationMessageHandler(TokenStorageService tokenStorage)
         => _tokenStorage = tokenStorage;
 
     protected override async Task<HttpResponseMessage> SendAsync(
