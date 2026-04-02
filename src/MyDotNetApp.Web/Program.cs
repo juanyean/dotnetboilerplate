@@ -46,6 +46,7 @@ try
     builder.Services.AddScoped<TokenStorageService>();
     builder.Services.AddScoped<JwtAuthStateProvider>();
     builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<JwtAuthStateProvider>());
+    builder.Services.AddScoped<ApiAuthHandler>();
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -55,8 +56,8 @@ try
     // ── Named HTTP client for Blazor pages calling Minimal API ──────────────
     builder.Services.AddHttpClient("API", client =>
     {
-        client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? "https://localhost:5001");
-    });
+        client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? "https://localhost:5051");
+    }).AddHttpMessageHandler<ApiAuthHandler>();
 
     // ── HTTP Context accessor ─────────────────��──────────────────────────────
     builder.Services.AddHttpContextAccessor();
