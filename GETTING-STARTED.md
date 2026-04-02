@@ -100,12 +100,12 @@ On first run the app will automatically:
 
 Expected output in terminal:
 ```
-[INF] Now listening on: https://localhost:5001
+[INF] Now listening on: https://localhost:5051
 [INF] Application started.
 ```
 
 ### Step 5 — Open the app
-Navigate to: **https://localhost:5001**
+Navigate to: **https://localhost:5051**
 
 > Your browser may warn about the development SSL certificate.
 > To trust it once: `dotnet dev-certs https --trust`
@@ -120,13 +120,13 @@ Use the checklist below to confirm everything is working.
 
 | Action | URL | Credentials |
 |---|---|---|
-| Login as Admin | https://localhost:5001/auth/login | `admin@app.com` / `Admin@123` |
-| Register new user | https://localhost:5001/auth/register | any email + strong password |
+| Login as Admin | https://localhost:5051/auth/login | `admin@app.com` / `Admin@123` |
+| Register new user | https://localhost:5051/auth/register | any email + strong password |
 | Logout | Click Logout in the top bar | — |
 
 ### Products (CRUD)
 
-Navigate to: **https://localhost:5001/products**
+Navigate to: **https://localhost:5051/products**
 
 | Test | Expected result |
 |---|---|
@@ -145,7 +145,7 @@ Navigate to: **https://localhost:5001/products**
 
 ### Admin — User Management
 
-Login as Admin and navigate to: **https://localhost:5001/admin/users**
+Login as Admin and navigate to: **https://localhost:5051/admin/users**
 
 | Test | Expected result |
 |---|---|
@@ -155,7 +155,7 @@ Login as Admin and navigate to: **https://localhost:5001/admin/users**
 
 ### Admin — Logs
 
-Navigate to: **https://localhost:5001/admin/logs**
+Navigate to: **https://localhost:5051/admin/logs**
 
 | Test | Expected result |
 |---|---|
@@ -227,8 +227,8 @@ dotnet ef database update `
 ### Port already in use
 Edit `src\MyDotNetApp.Web\Properties\launchSettings.json` and change the port numbers, or kill the process using the port:
 ```powershell
-# Find what's on port 5001
-netstat -ano | findstr :5001
+# Find what's on port 5051
+netstat -ano | findstr :5051
 # Kill by PID
 taskkill /PID <PID> /F
 ```
