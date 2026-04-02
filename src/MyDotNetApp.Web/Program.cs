@@ -44,7 +44,8 @@ try
 
     // ── Auth state for Blazor ────────────────────────────────────────────────
     builder.Services.AddScoped<TokenStorageService>();
-    builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthStateProvider>();
+    builder.Services.AddScoped<JwtAuthStateProvider>();
+    builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<JwtAuthStateProvider>());
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
