@@ -1,6 +1,6 @@
 @page "/admin/users"
 @attribute [Authorize(Roles = "Admin")]
-@inject IHttpClientFactory HttpFactory
+@inject MyDotNetApp.Web.Auth.ApiClient ApiClient
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
@@ -56,7 +56,7 @@ else
         _loading = true;
         try
         {
-            var http = HttpFactory.CreateClient("API");
+            var http = await ApiClient.CreateAsync();
             var result = await http.GetFromJsonAsync<List<UserDto>>("/api/users");
             _users = result ?? [];
         }

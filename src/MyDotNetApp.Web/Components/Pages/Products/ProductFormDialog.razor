@@ -1,4 +1,4 @@
-@inject IHttpClientFactory HttpFactory
+@inject MyDotNetApp.Web.Auth.ApiClient ApiClient
 @inject ISnackbar Snackbar
 
 <MudDialog>
@@ -53,7 +53,7 @@
         _loading = true;
         try
         {
-            var http = HttpFactory.CreateClient("API");
+            var http = await ApiClient.CreateAsync();
             var payload = new { Name = _name, Description = _description, Price = _price, SKU = _sku, Stock = _stock };
             HttpResponseMessage response;
 

@@ -1,6 +1,6 @@
 @page "/admin/logs"
 @attribute [Authorize(Roles = "Admin")]
-@inject IHttpClientFactory HttpFactory
+@inject MyDotNetApp.Web.Auth.ApiClient ApiClient
 
 <PageTitle>Application Logs</PageTitle>
 
@@ -51,7 +51,7 @@ else
         _loading = true;
         try
         {
-            var http = HttpFactory.CreateClient("API");
+            var http = await ApiClient.CreateAsync();
             var result = await http.GetFromJsonAsync<List<string>>($"/api/logs?lines={_lineCount}");
             _logLines = result ?? [];
         }

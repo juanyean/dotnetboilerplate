@@ -46,7 +46,7 @@ try
     builder.Services.AddScoped<TokenStorageService>();
     builder.Services.AddScoped<JwtAuthStateProvider>();
     builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<JwtAuthStateProvider>());
-    builder.Services.AddTransient<JwtAuthorizationMessageHandler>();
+    builder.Services.AddScoped<ApiClient>();
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -57,7 +57,7 @@ try
     builder.Services.AddHttpClient("API", client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"] ?? "https://localhost:5051");
-    }).AddHttpMessageHandler<JwtAuthorizationMessageHandler>();
+    });
 
     // ── HTTP Context accessor ─────────────────��──────────────────────────────
     builder.Services.AddHttpContextAccessor();

@@ -1,6 +1,6 @@
 @page "/products"
 @attribute [Authorize]
-@inject IHttpClientFactory HttpFactory
+@inject MyDotNetApp.Web.Auth.ApiClient ApiClient
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
@@ -77,7 +77,7 @@ else
         _loading = true;
         try
         {
-            var http = HttpFactory.CreateClient("API");
+            var http = await ApiClient.CreateAsync();
             var url = $"/api/products?search={Uri.EscapeDataString(_searchTerm ?? string.Empty)}&page={_currentPage + 1}&pageSize={_pageSize}";
             var result = await http.GetFromJsonAsync<PagedResponse<ProductDto>>(url);
             _products = result?.Items?.ToList() ?? [];
@@ -121,7 +121,7 @@ else
 
         if (confirm == true)
         {
-            var http = HttpFactory.CreateClient("API");
+            var http = await ApiClient.CreateAsync();
             var response = await http.DeleteAsync($"/api/products/{id}");
             if (response.IsSuccessStatusCode)
             {
