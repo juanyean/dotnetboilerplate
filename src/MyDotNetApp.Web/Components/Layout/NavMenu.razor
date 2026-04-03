@@ -1,13 +1,14 @@
-<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/products" Icon="@Icons.Material.Filled.Inventory">Products</MudNavLink>
+<MudNavMenu Class="mt-2">
+    <MudText Typo="Typo.overline" Class="px-4 pt-2 pb-1" Style="color:#90A4AE; font-size:10px; letter-spacing:1px;">MAIN</MudText>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Home</MudNavLink>
+    <MudNavLink Href="/products" Icon="@Icons.Material.Filled.Inventory2">Products</MudNavLink>
 
     <AuthorizeView Roles="Admin">
         <Authorized>
-            <MudNavGroup Title="Administration" Icon="@Icons.Material.Filled.AdminPanelSettings" Expanded="true">
-                <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
-                <MudNavLink Href="/admin/logs" Icon="@Icons.Material.Filled.Article">Logs</MudNavLink>
-            </MudNavGroup>
+            <MudDivider Class="my-2" />
+            <MudText Typo="Typo.overline" Class="px-4 pt-1 pb-1" Style="color:#90A4AE; font-size:10px; letter-spacing:1px;">ADMINISTRATION</MudText>
+            <MudNavLink Href="/admin/users" Icon="@Icons.Material.Filled.People">Users</MudNavLink>
+            <MudNavLink Href="/admin/logs" Icon="@Icons.Material.Filled.Terminal">Logs</MudNavLink>
         </Authorized>
     </AuthorizeView>
 </MudNavMenu>

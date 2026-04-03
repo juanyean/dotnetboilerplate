@@ -9,29 +9,32 @@
 <PageTitle>Login</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h5">Sign In</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
+    <div class="d-flex flex-column align-center mb-5">
+        <div style="background: linear-gradient(135deg, #1a237e, #3949AB); border-radius:16px; padding:16px; display:inline-flex; margin-bottom:16px;">
+            <MudIcon Icon="@Icons.Material.Filled.Bolt" Style="color:#FFD54F; font-size:2.5rem;" />
+        </div>
+        <MudText Typo="Typo.h5" Style="font-weight:700;">Welcome back</MudText>
+        <MudText Typo="Typo.body2" Style="color:#90A4AE;">Sign in to your account to continue</MudText>
+    </div>
+    <MudCard Elevation="0" Style="border: 1px solid #e0e0e0; border-radius:16px;">
+        <MudCardContent Class="pa-6">
             <MudTextField @bind-Value="_email" Label="Email" InputType="InputType.Email"
-                          Variant="Variant.Outlined" Class="mb-3" />
+                          Variant="Variant.Outlined" Class="mb-4"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
             <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
-                          Variant="Variant.Outlined" Class="mb-3" />
-        </MudCardContent>
-        <MudCardActions>
+                          Variant="Variant.Outlined" Class="mb-5"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
             <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                       OnClick="HandleLogin" Disabled="_loading">
-                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" /> }
-                else { <text>Login</text> }
+                       OnClick="HandleLogin" Disabled="_loading" Style="border-radius:8px; padding:12px; font-size:1rem; font-weight:600;">
+                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" /> <text>Signing in...</text> }
+                else { <MudIcon Icon="@Icons.Material.Filled.Login" Class="mr-2" /><text>Sign In</text> }
             </MudButton>
-        </MudCardActions>
-        <MudCardContent>
+        </MudCardContent>
+        <MudDivider />
+        <MudCardContent Class="pa-4">
             <MudText Typo="Typo.body2" Align="Align.Center">
                 Don't have an account?
-                <MudLink Href="/auth/register">Register</MudLink>
+                <MudLink Href="/auth/register" Style="font-weight:600;">Create one</MudLink>
             </MudText>
         </MudCardContent>
     </MudCard>

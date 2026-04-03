@@ -3,47 +3,85 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Welcome to MyDotNetApp</MudText>
-<MudText Typo="Typo.body1">
-    This is a Clean Architecture boilerplate built with ASP.NET Core 10, Blazor, Minimal APIs, and SignalR.
-</MudText>
+@* Hero Banner *@
+<MudPaper Elevation="0" Class="hero-banner pa-8 mb-6 rounded-lg" Style="background: linear-gradient(135deg, #1a237e 0%, #3949AB 60%, #00897B 100%); color: white;">
+    <MudGrid AlignItems="AlignItems.Center">
+        <MudItem xs="12" md="8">
+            <MudText Typo="Typo.overline" Style="color: rgba(255,255,255,0.7); letter-spacing:2px;">DASHBOARD</MudText>
+            <MudText Typo="Typo.h4" Style="font-weight:700; margin-top:4px;">
+                Welcome back<AuthorizeView><Authorized>, @context.User.Identity?.Name</Authorized></AuthorizeView> 👋
+            </MudText>
+            <MudText Typo="Typo.body1" Style="color: rgba(255,255,255,0.8); margin-top:8px;">
+                ASP.NET Core 10 · Blazor · Minimal APIs · SignalR · Clean Architecture
+            </MudText>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex justify-end">
+            <MudIcon Icon="@Icons.Material.Filled.Bolt" Style="font-size: 6rem; opacity: 0.15;" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
 
-<MudGrid Class="mt-6">
-    <MudItem xs="12" sm="6" md="3">
-        <MudCard>
-            <MudCardContent>
-                <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="Color.Primary" Size="Size.Large" />
-                <MudText Typo="Typo.h6">Products</MudText>
-                <MudText Typo="Typo.body2">Manage your product catalog.</MudText>
+@* Quick Access Cards *@
+<MudText Typo="Typo.subtitle1" Class="mb-3" Style="font-weight:600; color:#607D8B; letter-spacing:0.5px;">QUICK ACCESS</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Class="dashboard-card" Elevation="0" Style="border: 1px solid #e0e0e0; border-radius:12px;">
+            <MudCardContent Class="pa-5">
+                <div class="d-flex align-center mb-3">
+                    <div style="background: #EDE7F6; border-radius:10px; padding:10px; display:inline-flex;">
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory2" Style="color:#5C6BC0; font-size:1.8rem;" />
+                    </div>
+                </div>
+                <MudText Typo="Typo.h6" Style="font-weight:600;">Products</MudText>
+                <MudText Typo="Typo.body2" Style="color:#90A4AE; margin-top:4px;">Browse, add, edit and delete products in your catalog.</MudText>
             </MudCardContent>
-            <MudCardActions>
-                <MudButton Href="/products" Variant="Variant.Text" Color="Color.Primary">Go to Products</MudButton>
+            <MudCardActions Class="px-5 pb-4">
+                <MudButton Href="/products" Variant="Variant.Filled" Color="Color.Primary"
+                           EndIcon="@Icons.Material.Filled.ArrowForward" Style="border-radius:8px;">
+                    Go to Products
+                </MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
+
     <AuthorizeView Roles="Admin">
         <Authorized>
-            <MudItem xs="12" sm="6" md="3">
-                <MudCard>
-                    <MudCardContent>
-                        <MudIcon Icon="@Icons.Material.Filled.People" Color="Color.Secondary" Size="Size.Large" />
-                        <MudText Typo="Typo.h6">Users</MudText>
-                        <MudText Typo="Typo.body2">Manage application users.</MudText>
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Class="dashboard-card" Elevation="0" Style="border: 1px solid #e0e0e0; border-radius:12px;">
+                    <MudCardContent Class="pa-5">
+                        <div class="d-flex align-center mb-3">
+                            <div style="background: #E0F2F1; border-radius:10px; padding:10px; display:inline-flex;">
+                                <MudIcon Icon="@Icons.Material.Filled.People" Style="color:#00897B; font-size:1.8rem;" />
+                            </div>
+                        </div>
+                        <MudText Typo="Typo.h6" Style="font-weight:600;">Users</MudText>
+                        <MudText Typo="Typo.body2" Style="color:#90A4AE; margin-top:4px;">Manage registered users and their access levels.</MudText>
                     </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Href="/admin/users" Variant="Variant.Text" Color="Color.Secondary">Manage Users</MudButton>
+                    <MudCardActions Class="px-5 pb-4">
+                        <MudButton Href="/admin/users" Variant="Variant.Filled" Color="Color.Secondary"
+                                   EndIcon="@Icons.Material.Filled.ArrowForward" Style="border-radius:8px;">
+                            Manage Users
+                        </MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>
-            <MudItem xs="12" sm="6" md="3">
-                <MudCard>
-                    <MudCardContent>
-                        <MudIcon Icon="@Icons.Material.Filled.Article" Color="Color.Tertiary" Size="Size.Large" />
-                        <MudText Typo="Typo.h6">Logs</MudText>
-                        <MudText Typo="Typo.body2">View application logs.</MudText>
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Class="dashboard-card" Elevation="0" Style="border: 1px solid #e0e0e0; border-radius:12px;">
+                    <MudCardContent Class="pa-5">
+                        <div class="d-flex align-center mb-3">
+                            <div style="background: #FFF3E0; border-radius:10px; padding:10px; display:inline-flex;">
+                                <MudIcon Icon="@Icons.Material.Filled.Terminal" Style="color:#FB8C00; font-size:1.8rem;" />
+                            </div>
+                        </div>
+                        <MudText Typo="Typo.h6" Style="font-weight:600;">Logs</MudText>
+                        <MudText Typo="Typo.body2" Style="color:#90A4AE; margin-top:4px;">Monitor application logs with colour-coded severity.</MudText>
                     </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Href="/admin/logs" Variant="Variant.Text" Color="Color.Tertiary">View Logs</MudButton>
+                    <MudCardActions Class="px-5 pb-4">
+                        <MudButton Href="/admin/logs" Variant="Variant.Filled"
+                                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                                   Style="background:#FB8C00; color:white; border-radius:8px;">
+                            View Logs
+                        </MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>

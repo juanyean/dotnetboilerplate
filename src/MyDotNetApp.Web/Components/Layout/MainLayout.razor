@@ -1,33 +1,50 @@
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider Theme="_theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="0" Style="background: linear-gradient(135deg, #1a237e 0%, #283593 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
                        OnClick="@ToggleDrawer" />
-        <MudText Typo="Typo.h6" Class="ml-3">MyDotNetApp</MudText>
+        <MudIcon Icon="@Icons.Material.Filled.Bolt" Color="Color.Warning" Class="ml-2" />
+        <MudText Typo="Typo.h6" Class="ml-1" Style="font-weight:600; letter-spacing:0.5px;">MyDotNetApp</MudText>
         <MudSpacer />
         <AuthorizeView>
             <Authorized>
-                <MudText Typo="Typo.body1" Class="mr-3">@context.User.Identity?.Name</MudText>
-                <MudButton Color="Color.Inherit" OnClick="Logout">Logout</MudButton>
+                <MudChip T="string" Icon="@Icons.Material.Filled.Person" Color="Color.Dark"
+                         Class="mr-2" Style="color:white; background:rgba(255,255,255,0.15);">
+                    @context.User.Identity?.Name
+                </MudChip>
+                <MudTooltip Text="Logout">
+                    <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="Logout" />
+                </MudTooltip>
             </Authorized>
             <NotAuthorized>
-                <MudButton Color="Color.Inherit" Href="/auth/login">Login</MudButton>
+                <MudButton Color="Color.Inherit" Href="/auth/login" StartIcon="@Icons.Material.Filled.Login">Login</MudButton>
             </NotAuthorized>
         </AuthorizeView>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="0" ClipMode="DrawerClipMode.Always"
+               Style="border-right: 1px solid rgba(0,0,0,0.08);">
+        <MudDrawerHeader Style="padding: 16px; background: linear-gradient(135deg, #1a237e 0%, #283593 100%);">
+            <div class="d-flex align-center">
+                <MudIcon Icon="@Icons.Material.Filled.Bolt" Color="Color.Warning" Style="font-size:1.8rem;" />
+                <div class="ml-2">
+                    <MudText Typo="Typo.subtitle1" Style="color:white; font-weight:700; line-height:1.2;">MyDotNetApp</MudText>
+                    <MudText Typo="Typo.caption" Style="color:rgba(255,255,255,0.6);">Boilerplate v1.0</MudText>
+                </div>
+            </div>
+        </MudDrawerHeader>
+        <MudDivider />
         <NavMenu />
     </MudDrawer>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-6 mb-6">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -44,6 +61,25 @@
 
     [Inject] private JwtAuthStateProvider AuthProvider { get; set; } = null!;
     [Inject] private NavigationManager Navigation { get; set; } = null!;
+
+    private readonly MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#3949AB",
+            PrimaryDarken = "#1a237e",
+            PrimaryLighten = "#5c6bc0",
+            Secondary = "#00897B",
+            SecondaryDarken = "#00695C",
+            AppbarBackground = "#1a237e",
+            Background = "#F8F9FC",
+            Surface = "#FFFFFF",
+            DrawerBackground = "#FFFFFF",
+            DrawerText = "#37474F",
+            TextPrimary = "#263238",
+            TextSecondary = "#607D8B",
+        }
+    };
 
     private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 

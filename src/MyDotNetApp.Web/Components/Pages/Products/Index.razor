@@ -7,20 +7,20 @@
 
 <PageTitle>Products</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
+<div class="d-flex align-center justify-space-between mb-5">
+    <div>
+        <MudText Typo="Typo.h5" Style="font-weight:700;">Products</MudText>
+        <MudText Typo="Typo.body2" Style="color:#90A4AE;">Manage your product catalog</MudText>
+    </div>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+               OnClick="OpenCreateDialog" Style="border-radius:8px; font-weight:600;">New Product</MudButton>
+</div>
 
-<MudPaper Class="pa-4 mb-4">
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudTextField @bind-Value="_searchTerm" Label="Search" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined"
-                          Immediate="true" DebounceInterval="400" OnDebounceIntervalElapsed="LoadProducts" />
-        </MudItem>
-        <MudItem xs="12" sm="6" Class="d-flex justify-end">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
-                       OnClick="OpenCreateDialog">New Product</MudButton>
-        </MudItem>
-    </MudGrid>
+<MudPaper Elevation="0" Class="pa-4 mb-4" Style="border: 1px solid #e0e0e0; border-radius:12px;">
+    <MudTextField @bind-Value="_searchTerm" Label="Search products..." Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search" Variant="Variant.Outlined"
+                  Immediate="true" DebounceInterval="400" OnDebounceIntervalElapsed="LoadProducts"
+                  Style="max-width:400px;" />
 </MudPaper>
 
 @if (_loading)
@@ -29,8 +29,10 @@
 }
 else
 {
-    <MudTable Items="_products" Hover="true" Striped="true" Dense="true"
-              CurrentPage="_currentPage" RowsPerPage="_pageSize">
+    <MudTable Items="_products" Hover="true" Striped="false" Dense="false"
+              CurrentPage="_currentPage" RowsPerPage="_pageSize"
+              Style="border-radius:12px; overflow:hidden;" Elevation="0"
+              Class="border" >
         <HeaderContent>
             <MudTh>Name</MudTh>
             <MudTh>SKU</MudTh>

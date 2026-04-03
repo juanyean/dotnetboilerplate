@@ -2,10 +2,23 @@
 html, body {
     font-family: 'Roboto', sans-serif;
     height: 100%;
+    background-color: #F8F9FC;
 }
 
 .mud-table-container {
     overflow-x: auto;
+}
+
+/* Dashboard cards hover effect */
+.dashboard-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(57, 73, 171, 0.15) !important;
+    border-color: #9FA8DA !important;
 }
 
 /* Log viewer */
@@ -18,4 +31,16 @@ html, body {
     overflow-x: auto;
     max-height: 600px;
     overflow-y: auto;
+    border-radius: 8px;
+}
+
+/* Drawer nav labels */
+.mud-nav-link.active {
+    background: rgba(57, 73, 171, 0.1) !important;
+    border-right: 3px solid #3949AB;
+}
+
+/* Table border utility */
+.border {
+    border: 1px solid #e0e0e0 !important;
 }

@@ -8,32 +8,37 @@
 <PageTitle>Register</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-10">
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h5">Create Account</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudTextField @bind-Value="_userName" Label="Username" Variant="Variant.Outlined" Class="mb-3" />
+    <div class="d-flex flex-column align-center mb-5">
+        <div style="background: linear-gradient(135deg, #1a237e, #3949AB); border-radius:16px; padding:16px; display:inline-flex; margin-bottom:16px;">
+            <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Style="color:#FFD54F; font-size:2.5rem;" />
+        </div>
+        <MudText Typo="Typo.h5" Style="font-weight:700;">Create Account</MudText>
+        <MudText Typo="Typo.body2" Style="color:#90A4AE;">Fill in the details below to get started</MudText>
+    </div>
+    <MudCard Elevation="0" Style="border: 1px solid #e0e0e0; border-radius:16px;">
+        <MudCardContent Class="pa-6">
+            <MudTextField @bind-Value="_userName" Label="Username" Variant="Variant.Outlined" Class="mb-4"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Person" />
             <MudTextField @bind-Value="_email" Label="Email" InputType="InputType.Email"
-                          Variant="Variant.Outlined" Class="mb-3" />
+                          Variant="Variant.Outlined" Class="mb-4"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
             <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
-                          Variant="Variant.Outlined" Class="mb-3" />
+                          Variant="Variant.Outlined" Class="mb-4"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
             <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputType="InputType.Password"
-                          Variant="Variant.Outlined" Class="mb-3" />
-        </MudCardContent>
-        <MudCardActions>
+                          Variant="Variant.Outlined" Class="mb-5"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LockOutlined" />
             <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
-                       OnClick="HandleRegister" Disabled="_loading">
-                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" /> }
-                else { <text>Register</text> }
+                       OnClick="HandleRegister" Disabled="_loading" Style="border-radius:8px; padding:12px; font-size:1rem; font-weight:600;">
+                @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" /> <text>Creating account...</text> }
+                else { <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Class="mr-2" /><text>Create Account</text> }
             </MudButton>
-        </MudCardActions>
-        <MudCardContent>
+        </MudCardContent>
+        <MudDivider />
+        <MudCardContent Class="pa-4">
             <MudText Typo="Typo.body2" Align="Align.Center">
                 Already have an account?
-                <MudLink Href="/auth/login">Login</MudLink>
+                <MudLink Href="/auth/login" Style="font-weight:600;">Sign in</MudLink>
             </MudText>
         </MudCardContent>
     </MudCard>
