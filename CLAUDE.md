@@ -97,7 +97,8 @@ MyDotNetApp/
 │       ├── appsettings.Development.json
 │       ├── Auth/
 │       │   ├── JwtAuthStateProvider.cs ← AuthenticationStateProvider from localStorage JWT
-│       │   └── TokenStorageService.cs  ← JS interop localStorage read/write
+│       │   ├── TokenStorageService.cs  ← JS interop localStorage read/write
+│       │   └── ApiClient.cs            ← Scoped service: creates authenticated HttpClient with Bearer token
 │       ├── Components/
 │       │   ├── App.razor               ← HTML shell, MudBlazor CSS/JS
 │       │   ├── Routes.razor            ← Router with AuthorizeRouteView
@@ -296,7 +297,7 @@ Runs on startup via `DataSeeder.SeedAsync(app)`. Creates:
 3. `AddInfrastructureServices(config)`
 4. `AddRazorComponents().AddInteractiveServerComponents()`
 5. `AddMudServices()`
-6. `TokenStorageService`, `JwtAuthStateProvider`, `AddAuthorization` (with `"AdminOnly"` policy)
+6. `TokenStorageService`, `JwtAuthStateProvider`, `ApiClient`, `AddAuthorization` (with `"AdminOnly"` policy)
 7. `AddHttpClient("API", ...)` — named client with base address from `ApiBaseUrl`
 8. `AddProblemDetails()` + `AddExceptionHandler<GlobalExceptionHandler>()`
 
@@ -329,7 +330,15 @@ Each group is an `IEndpointRouteBuilder` extension method, registered in `Progra
 | `/admin/users` | `Pages/Admin/Users.razor` | `[Authorize(Roles="Admin")]` |
 | `/admin/logs` | `Pages/Admin/Logs.razor` | `[Authorize(Roles="Admin")]` |
 
-Unauthenticated users are redirected to `/auth/login` by `RedirectToLogin.razor` inside `Routes.razor`.
+Unauthenticated users are redirected to `/auth/login?returnUrl=...` by `RedirectToLogin.razor` inside `Routes.razor`. After login, the user is returned to the original URL.
+
+**Important:** `Routes.razor` also renders styled **Access Denied** (lock icon) and **Page Not Found** (search icon) pages via MudBlazor components, replacing plain text fallbacks.
+
+**Prerendering is disabled** (`App.razor` uses `new InteractiveServerRenderMode(prerender: false)`). This is required because auth state reads from `localStorage` via JS interop, which is unavailable during server-side prerendering. Disabling prerender ensures the Blazor circuit starts before auth is checked.
+
+**`MapRazorComponents` uses `.AllowAnonymous()`** so ASP.NET Core's HTTP-level auth middleware does not block Blazor page routes. Auth is enforced client-side by `AuthorizeRouteView`. API endpoints remain protected by JWT at the HTTP level.
+
+**`ApiClient`** (`Auth/ApiClient.cs`) is a scoped service that wraps `IHttpClientFactory`, reads the JWT from `localStorage` at call time, and attaches it as a `Bearer` token. All Blazor pages call `ApiClient.CreateAsync()` to get an authenticated `HttpClient`.
 
 ### Authentication Flow (Blazor)
 1. User submits login form → POST `/api/auth/login`
@@ -337,6 +346,7 @@ Unauthenticated users are redirected to `/auth/login` by `RedirectToLogin.razor`
 3. `JwtAuthStateProvider.NotifyUserLoginAsync(token)` parses JWT claims → notifies Blazor auth state
 4. On logout: token removed from `localStorage`, auth state reset
 5. `JwtAuthStateProvider.GetAuthenticationStateAsync()` — checks token expiry on every auth state read
+6. Blazor pages call `await ApiClient.CreateAsync()` to get an `HttpClient` with `Authorization: Bearer <token>`
 
 ### SignalR Real-Time Flow
 1. `NotificationListener.razor` connects to `/hubs/notifications?access_token=<jwt>` after render
@@ -359,7 +369,7 @@ Unauthenticated users are redirected to `/auth/login` by `RedirectToLogin.razor`
     "Audience": "MyDotNetApp",
     "ExpirationMinutes": 60
   },
-  "ApiBaseUrl": "https://localhost:5001",
+  "ApiBaseUrl": "https://localhost:5051",
   "Serilog": {
     "MinimumLevel": { "Default": "Information" }
   }

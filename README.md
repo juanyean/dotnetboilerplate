@@ -28,14 +28,14 @@ dotnet restore
 # 3. Install EF Core CLI (if not done)
 dotnet tool install -g dotnet-ef
 
-# 4. Create database and apply migrations
-cd src\MyDotNetApp.Web
-dotnet ef database update
+# 4. Create database and apply migrations (run from solution root)
+dotnet ef migrations add InitialCreate --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+dotnet ef database update --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
 
 # 5. Run the application
-dotnet run
+dotnet run --project src\MyDotNetApp.Web
 
-# App available at: https://localhost:5001
+# App available at: https://localhost:5051
 ```
 
 ### Default Admin Login
