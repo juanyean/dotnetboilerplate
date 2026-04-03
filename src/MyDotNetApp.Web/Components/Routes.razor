@@ -8,16 +8,35 @@
                 }
                 else
                 {
-                    <p>You are not authorized to view this page.</p>
+                    <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16 text-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Error" Style="font-size:4rem;" />
+                        <MudText Typo="Typo.h5" Class="mt-4">Access Denied</MudText>
+                        <MudText Typo="Typo.body1" Class="mt-2 mb-6" Color="Color.Secondary">
+                            You do not have permission to view this page.
+                        </MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">Go to Home</MudButton>
+                    </MudContainer>
                 }
             </NotAuthorized>
+            <Authorizing>
+                <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16 d-flex justify-center">
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                </MudContainer>
+            </Authorizing>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="typeof(Layout.MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+            <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16 text-center">
+                <MudIcon Icon="@Icons.Material.Filled.SearchOff" Color="Color.Warning" Style="font-size:4rem;" />
+                <MudText Typo="Typo.h5" Class="mt-4">Page Not Found</MudText>
+                <MudText Typo="Typo.body1" Class="mt-2 mb-6" Color="Color.Secondary">
+                    Sorry, there's nothing at this address.
+                </MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">Go to Home</MudButton>
+            </MudContainer>
         </LayoutView>
     </NotFound>
 </Router>
