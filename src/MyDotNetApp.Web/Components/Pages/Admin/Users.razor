@@ -1,6 +1,10 @@
 @page "/admin/users"
 @attribute [Authorize(Roles = "Admin")]
+<<<<<<< HEAD
 @inject MyDotNetApp.Web.Auth.ApiClient ApiClient
+=======
+@inject AuthenticatedApiClient ApiClient
+>>>>>>> 685e44b (fix: use ApiClient.CreateAsync() in ToggleActive instead of HttpFactory)
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
@@ -68,7 +72,7 @@ else
 
     private async Task ToggleActive(UserDto user)
     {
-        var http = HttpFactory.CreateClient("API");
+        var http = await ApiClient.CreateAsync();
         var payload = new
         {
             user.UserName,
