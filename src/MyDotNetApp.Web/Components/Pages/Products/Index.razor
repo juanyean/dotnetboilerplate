@@ -69,7 +69,11 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) await LoadProducts();
+        if (firstRender)
+        {
+            await LoadProducts();
+            StateHasChanged();
+        }
     }
 
     private async Task LoadProducts()

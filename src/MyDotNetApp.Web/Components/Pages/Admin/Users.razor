@@ -48,7 +48,11 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) await LoadUsers();
+        if (firstRender)
+        {
+            await LoadUsers();
+            StateHasChanged();
+        }
     }
 
     private async Task LoadUsers()

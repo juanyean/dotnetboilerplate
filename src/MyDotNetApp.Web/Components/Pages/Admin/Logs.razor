@@ -43,7 +43,11 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) await LoadLogs();
+        if (firstRender)
+        {
+            await LoadLogs();
+            StateHasChanged();
+        }
     }
 
     private async Task LoadLogs()
