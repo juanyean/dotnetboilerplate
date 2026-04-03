@@ -69,6 +69,17 @@ public static class DependencyInjection
                     if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                         ctx.Token = accessToken;
                     return Task.CompletedTask;
+                },
+                OnChallenge = ctx =>
+                {
+                    // Only let JWT issue 401 challenges for API and hub routes.
+                    // Blazor page routes are handled client-side by AuthorizeRouteView.
+                    if (!ctx.Request.Path.StartsWithSegments("/api") &&
+                        !ctx.Request.Path.StartsWithSegments("/hubs"))
+                    {
+                        ctx.HandleResponse();
+                    }
+                    return Task.CompletedTask;
                 }
             };
         });
