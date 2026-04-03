@@ -100,7 +100,8 @@ try
 
     // ── Blazor ───────────────────────────────────────────────────────────────
     app.MapRazorComponents<MyDotNetApp.Web.Components.App>()
-        .AddInteractiveServerRenderMode();
+        .AddInteractiveServerRenderMode()
+        .AllowAnonymous(); // Auth is handled client-side by AuthorizeRouteView
 
     // ── Seed database ────────────────────────────────────────────────────────
     await DataSeeder.SeedAsync(app);
