@@ -27,7 +27,7 @@
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
             <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputType="InputType.Password"
                           Variant="Variant.Outlined" Class="mb-5"
-                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.LockOutlined" />
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Outlined.Lock" />
             <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
                        OnClick="HandleRegister" Disabled="_loading" Style="border-radius:8px; padding:12px; font-size:1rem; font-weight:600;">
                 @if (_loading) { <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" /> <text>Creating account...</text> }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentAssertions;
 using Moq;
+using Xunit;
 using MyDotNetApp.Application.DTOs;
 using MyDotNetApp.Application.Interfaces;
 using MyDotNetApp.Application.Mappings;

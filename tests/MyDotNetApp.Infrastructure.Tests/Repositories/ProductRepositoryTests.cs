@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Xunit;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using MyDotNetApp.Domain.Entities;
