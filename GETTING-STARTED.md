@@ -76,10 +76,8 @@ Expected: all packages restored, no errors.
 > This only needs to be done **once** (or after you add a new entity).
 
 Run from the **solution root**:
-```powershell
-dotnet ef migrations add InitialCreate `
-  --project src\MyDotNetApp.Infrastructure `
-  --startup-project src\MyDotNetApp.Web
+```cmd
+dotnet ef migrations add InitialCreate --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
 ```
 
 - `--project` — where the migration files are written (`Infrastructure`)
@@ -109,6 +107,8 @@ Navigate to: **https://localhost:5051**
 
 > Your browser may warn about the development SSL certificate.
 > To trust it once: `dotnet dev-certs https --trust`
+
+Unauthenticated users are **automatically redirected** to the login page. You will not see a 401 error — the app handles this gracefully and returns you to your original URL after login.
 
 ---
 
@@ -151,7 +151,7 @@ Login as Admin and navigate to: **https://localhost:5051/admin/users**
 |---|---|
 | Page loads | Table lists all registered users |
 | Click edit on a user | Active/Inactive toggles |
-| Login as regular User | Page returns "not authorized" |
+| Login as regular User | Styled "Access Denied" page with lock icon and "Go to Home" button |
 
 ### Admin — Logs
 
@@ -213,15 +213,9 @@ dotnet dev-certs https --trust
 ```
 
 ### Migration errors on startup
-```powershell
-# Reset the database completely (run from solution root)
-dotnet ef database drop --force `
-  --project src\MyDotNetApp.Infrastructure `
-  --startup-project src\MyDotNetApp.Web
-
-dotnet ef database update `
-  --project src\MyDotNetApp.Infrastructure `
-  --startup-project src\MyDotNetApp.Web
+```cmd
+dotnet ef database drop --force --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
+dotnet ef database update --project src\MyDotNetApp.Infrastructure --startup-project src\MyDotNetApp.Web
 ```
 
 ### Port already in use
@@ -232,6 +226,13 @@ netstat -ano | findstr :5051
 # Kill by PID
 taskkill /PID <PID> /F
 ```
+
+### Redirected to login on every page load (even when logged in)
+This happens if prerendering is accidentally re-enabled. Confirm `App.razor` uses:
+```razor
+<Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+```
+Prerendering must be disabled because auth reads from `localStorage` via JS interop, which is unavailable during server-side prerender.
 
 ### Build errors after adding a new entity
 Make sure you:
